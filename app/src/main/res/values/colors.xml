@@ -2,6 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#CCCCCC</color>
+
+    <color name="backgroudCLr">#E4EAE4</color>
+
+    <color name="headerBg">#005B98</color>
+
 
 
     <color name="text_color">#0099FF</color>

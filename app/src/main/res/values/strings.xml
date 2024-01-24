@@ -13,4 +13,21 @@
     <string name="Enter_Your_Name">Enter Your Name</string>
     <string name="register_email_hint">Enter Your Mail</string>
     <string name="Confirm_Password">Confirm Password</string>
+    <string name="search_students">Search Student</string>
+
+    <string-array name="select_course">
+        <item name="">Select Course</item>
+        <item name="mba">MBA</item>
+        <item name="mca">MCA</item>
+    </string-array>
+
+    <string-array name="batch_array">
+
+        <item>2022-2024</item>
+        <item>2023-2025</item>
+
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
