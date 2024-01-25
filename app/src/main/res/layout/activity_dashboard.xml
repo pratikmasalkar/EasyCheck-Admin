@@ -30,6 +30,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/greetmsg"
@@ -230,6 +231,12 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SignOut"
+        android:onClick="signOut"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

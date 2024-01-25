@@ -89,7 +89,7 @@ public class Registration extends AppCompatActivity {
                             etCnfpass.setText("");
 
                             // Navigate to another activity
-                            startActivity(new Intent(Registration.this, LoginActivity.class));
+//                            startActivity(new Intent(Registration.this, LoginActivity.class));
                             overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
                             finish();
                         } else {
