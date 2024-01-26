@@ -117,6 +117,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/batches"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="60dp"
@@ -130,6 +131,7 @@
                 android:background="@drawable/course" />
 
             <Button
+                android:id="@+id/teachers"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="60dp"

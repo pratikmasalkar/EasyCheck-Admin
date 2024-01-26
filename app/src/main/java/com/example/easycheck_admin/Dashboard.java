@@ -29,7 +29,7 @@ public class Dashboard extends AppCompatActivity {
     private ListView listBatches;
     private List<String> batchNames = new ArrayList<>();
 
-    private Button student, courses;
+    private Button student, courses,teachers,batches;
     private TextView userName;
 
 
@@ -41,6 +41,8 @@ public class Dashboard extends AppCompatActivity {
 
         student = findViewById(R.id.student);
         courses = findViewById(R.id.courses);
+        teachers=findViewById(R.id.teachers);
+        batches=findViewById(R.id.batches);
 
         // Static data for now (replace with Firebase data later)
         batchNames.add("Batch A");
@@ -110,9 +112,23 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+        teachers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Dashboard.this, TeacherActivity.class));
+            }
+        });
+
+        batches.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Dashboard.this,BatchDetailActivity.class));
+            }
+        });
     }
     public void signOut (View view){
         FirebaseAuth.getInstance().signOut();
+
         Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show();
         // Optionally, navigate back to the login screen:
         startActivity(new Intent(this, LoginActivity.class));
