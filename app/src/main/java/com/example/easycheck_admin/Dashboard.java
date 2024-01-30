@@ -29,8 +29,10 @@ public class Dashboard extends AppCompatActivity {
     private ListView listBatches;
     private List<String> batchNames = new ArrayList<>();
 
-    private Button student, courses,teachers,batches;
+    private Button student, courses, teachers, batches;
     private TextView userName;
+    private ArrayAdapter<String> batchAdapter;
+    private DatabaseReference databaseReference;
 
 
     @Override
@@ -41,15 +43,13 @@ public class Dashboard extends AppCompatActivity {
 
         student = findViewById(R.id.student);
         courses = findViewById(R.id.courses);
-        teachers=findViewById(R.id.teachers);
-        batches=findViewById(R.id.batches);
+        teachers = findViewById(R.id.teachers);
+        batches = findViewById(R.id.batches);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference batchRef = databaseReference.child("batches");
 
         // Static data for now (replace with Firebase data later)
-        batchNames.add("Batch A");
-        batchNames.add("Batch B");
-        batchNames.add("Batch C");
-        batchNames.add("Batch D");
-        batchNames.add("Batch E");
         userName = findViewById(R.id.userName); // Get the TextView reference
 
         // Check for current user
@@ -82,9 +82,24 @@ public class Dashboard extends AppCompatActivity {
             // (You might want to redirect to the login screen)
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, batchNames);
-        listBatches.setAdapter(adapter);
+        batchRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot batchSnapshot : snapshot.getChildren()) {
+                    String BatchName = batchSnapshot.child("name").getValue(String.class);
+                    batchNames.add(BatchName);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getBaseContext(),
+                        android.R.layout.simple_list_item_1, batchNames);
+                listBatches.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getBaseContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
 
         listBatches.setOnItemClickListener((parent, view, position, id) -> {
             String selectedBatchName = (String) parent.getItemAtPosition(position);
@@ -122,11 +137,12 @@ public class Dashboard extends AppCompatActivity {
         batches.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Dashboard.this,BatchDetailActivity.class));
+                startActivity(new Intent(Dashboard.this, BatchDetailActivity.class));
             }
         });
     }
-    public void signOut (View view){
+
+    public void signOut(View view) {
         FirebaseAuth.getInstance().signOut();
 
         Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show();

@@ -94,11 +94,19 @@
             android:textColor="@color/black"
             android:textStyle="bold" />
 
-        <ListView
-            android:id="@+id/list_batches"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp" />
+            android:orientation="vertical">
+
+            <ListView
+                style="@style/listView"
+                android:id="@+id/list_batches"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp" />
+
+        </LinearLayout>
 
 
     </androidx.cardview.widget.CardView>
@@ -149,25 +157,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
+                android:text="Batches"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:text="Batches"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="55dp"
+                android:text="Courses"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:text="Courses"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
+                android:text="Teacher"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:text="Teacher"/>
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -210,25 +218,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
+                android:text="Student"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:text="Student"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="55dp"
+                android:text="Attendance"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:text="Attendance"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="46dp"
+                android:text="Other"
                 android:textAlignment="center"
-                android:textStyle="bold"
-                android:text="Other"/>
+                android:textStyle="bold" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -237,8 +245,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SignOut"
-        android:onClick="signOut"/>
+        android:onClick="signOut"
+        android:text="SignOut" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

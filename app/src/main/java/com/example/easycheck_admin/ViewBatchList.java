@@ -86,7 +86,7 @@ public class ViewBatchList extends Fragment {
 
                         // Create a bundle to pass batch details to the fragment
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("batch", selectedBatchName);
+                        bundle.putString("batch", selectedBatchName);
 
                         // Create and open the BatchDetailFragment
                         BatchDetailInfoFragment batchDetailInfoFragment = new BatchDetailInfoFragment();

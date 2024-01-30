@@ -179,6 +179,39 @@ public class CreateBatchFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+
+                            // Update teacher nodes with relevant batch and subject, only for existing teachers
+                            for (Map.Entry<String, String> entry : teachers.entrySet()) {
+                                String subjectName = entry.getKey();
+                                String teacherName = entry.getValue();
+                                String batchName = (String) batchData.get("name");
+
+                                // Iterate through child nodes of "teachers" to find the one with matching name
+                                teachersRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (DataSnapshot childSnapshot : task.getResult().getChildren()) {
+                                                String teacherNodeName = childSnapshot.child("name").getValue(String.class);
+                                                if (teacherNodeName.equals(teacherName)) { // Teacher node found
+                                                    // Create the "batches" node if it doesn't exist under this teacher node
+                                                    childSnapshot.child("batches").getRef().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                                                            // Add the batch and subject to the teacher's "batches" node
+                                                            childSnapshot.child("batches").getRef().child(batchName).setValue(subjectName);
+                                                        }
+                                                    });
+                                                    break; // Exit the loop as the teacher node is found
+                                                }
+                                            }
+                                        } else {
+                                            // Handle error if fetching "teachers" node fails
+                                        }
+                                    }
+                                });
+                            }
                             Toast.makeText(getContext(), "Batch created successfully!", Toast.LENGTH_SHORT).show();
 
                             courseSpinner.setSelection(0);

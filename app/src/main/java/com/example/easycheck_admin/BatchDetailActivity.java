@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.android.material.tabs.TabLayout;
@@ -56,5 +58,9 @@ public class BatchDetailActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public void dashboard(View view) {
+        startActivity(new Intent(this, Dashboard.class));
+        overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 }

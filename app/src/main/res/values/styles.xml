@@ -20,6 +20,11 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="listView">
+        <item name="android:textColor">@color/contentTextColor</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
     <style name="viewParent.headerText.NoMode">
         <item name="android:textColor">@color/darkTextColor</item>
