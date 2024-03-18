@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,7 +170,7 @@ public class CreateBatchFragment extends Fragment {
 
         // Create batch data structure
         batchData.put("name", batchName);
-        batchData.put("course",courseName);
+        batchData.put("course", courseName);
         batchData.put("subjects", subjects);
         batchData.put("teachers", teachers);
 
@@ -180,37 +181,35 @@ public class CreateBatchFragment extends Fragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
 
-                            // Update teacher nodes with relevant batch and subject, only for existing teachers
+                            // Update teacher nodes with relevant batch and subject
                             for (Map.Entry<String, String> entry : teachers.entrySet()) {
                                 String subjectName = entry.getKey();
                                 String teacherName = entry.getValue();
                                 String batchName = (String) batchData.get("name");
 
-                                // Iterate through child nodes of "teachers" to find the one with matching name
-                                teachersRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (DataSnapshot childSnapshot : task.getResult().getChildren()) {
-                                                String teacherNodeName = childSnapshot.child("name").getValue(String.class);
-                                                if (teacherNodeName.equals(teacherName)) { // Teacher node found
-                                                    // Create the "batches" node if it doesn't exist under this teacher node
-                                                    childSnapshot.child("batches").getRef().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                // Find the teacher node using a query by teacher name
+                                teachersRef.orderByChild("name").equalTo(teacherName)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    // Teacher node found, get the unique ID
+                                                    String teacherId = snapshot.getChildren().iterator().next().getKey();
+                                                    DatabaseReference teacherBatchRef = teachersRef.child(teacherId).child("batches");
 
-                                                            // Add the batch and subject to the teacher's "batches" node
-                                                            childSnapshot.child("batches").getRef().child(batchName).setValue(subjectName);
-                                                        }
-                                                    });
-                                                    break; // Exit the loop as the teacher node is found
+                                                    // Update the teacher's "batches" node with batch and subject
+                                                    teacherBatchRef.child(batchName).setValue(subjectName);
+                                                } else {
+                                                    Log.w("CreateBatchFragment", "Teacher not found: " + teacherName);
+                                                    // Handle case where teacher is not found (optional)
                                                 }
                                             }
-                                        } else {
-                                            // Handle error if fetching "teachers" node fails
-                                        }
-                                    }
-                                });
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                Log.w("CreateBatchFragment", "Error fetching teachers: ", error.toException());
+                                            }
+                                        });
                             }
                             Toast.makeText(getContext(), "Batch created successfully!", Toast.LENGTH_SHORT).show();
 
@@ -240,5 +239,6 @@ public class CreateBatchFragment extends Fragment {
                     }
                 });
     }
+
 
 }

@@ -69,20 +69,58 @@ public class BatchDetailInfoFragment extends Fragment {
                     Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG);
                 }
             });
+            removeBatchButton = view.findViewById(R.id.remove_button);
+            removeBatchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeBatch();
+                }
+            });
             // Assuming a method to format teachers
         }
+        return view;
+    }
 
-        removeBatchButton = view.findViewById(R.id.remove_button);
-        removeBatchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Remove the course from Firebase Realtime Database
-                if (selectedBatchId != null) {
+    public void removeBatch() {
+        if (selectedBatchId != null) {
+            DatabaseReference teachersRef = FirebaseDatabase.getInstance().getReference("teachers");
+
+            // 1. Retrieve teacher names associated with the batch
+            batchRef.child(selectedBatchId).child("teachers").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot subjectSnapshot : snapshot.getChildren()) {
+                            String teacherName = subjectSnapshot.getValue(String.class);
+
+                            // 2. Remove batch data (selected batch name) from each teacher's "batches" node
+                            teachersRef.orderByChild("name").equalTo(teacherName)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()) {
+                                                // Teacher node found, get the unique ID
+                                                String teacherId = snapshot.getChildren().iterator().next().getKey();
+                                                DatabaseReference teacherBatchRef = teachersRef.child(teacherId).child("batches").child(selectedBatchName);
+                                                teacherBatchRef.removeValue();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+                        }
+                    }
+
+                    // 3. Remove batch from "batches" node (existing logic)
                     batchRef.child(selectedBatchId).removeValue()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    // Course removed successfully
+                                    // Handle success after removing batch data (optional)
                                     Toast.makeText(getContext(), "Batch removed successfully!", Toast.LENGTH_SHORT).show();
                                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                     fragmentManager.popBackStack();
@@ -91,17 +129,20 @@ public class BatchDetailInfoFragment extends Fragment {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Failed to remove course: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Failed to remove batch: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-                } else {
-                    // Handle case where selected course name is not available
-                    Toast.makeText(getContext(), "Batch details not available. Please try again later.", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
 
-
-        return view;
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getContext(), "Failed to remove batch: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // Handle case where selected batch name is not available
+            Toast.makeText(getContext(), "Batch details not available. Please try again later.", Toast.LENGTH_SHORT).show();
+        }
     }
+
 }
